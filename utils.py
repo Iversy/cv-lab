@@ -1,3 +1,5 @@
+from functools import reduce
+from itertools import product
 import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
@@ -16,6 +18,27 @@ def plot(func, axes: Axes, label: str, *args, **kwargs):
     x = np.linspace(0, 1, 1000)
     data = dict(x=x, y=func(x, *args, **kwargs))
     sns.lineplot(data, x='x', y='y', ax=axes, label=label)
+
+
+def pad(image: np.ndarray, size: int):
+    padding = [(size,)*2, (size,)*2]
+    for _ in range(len(image.shape)-2):
+        padding.append((0, 0))
+    return np.pad(image, padding, mode='edge')
+
+
+def linear(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+    w, h, *_ = image.shape
+    assert kernel.shape[0] == kernel.shape[1]
+    k, *_ = kernel.shape
+    padded = pad(image, k//2)
+    return reduce(np.add, (
+        padded[x:x+w, y:y+h, ...] * mul
+        for mul, (x, y) in zip(
+            kernel.ravel(),
+            product(range(k), repeat=2)
+        )
+    ))
 
 
 def panels() -> tuple[Axes, Axes]:
