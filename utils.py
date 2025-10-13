@@ -1,5 +1,6 @@
 from functools import reduce
 from itertools import product
+from typing import Optional
 import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
@@ -20,8 +21,8 @@ def plot(func, axes: Axes, label: str, *args, **kwargs):
     sns.lineplot(data, x='x', y='y', ax=axes, label=label)
 
 
-def pad(image: np.ndarray, size: int):
-    padding = [(size,)*2, (size,)*2]
+def pad(image: np.ndarray, vertical: int, horizontal: Optional[int]=None):
+    padding = [(vertical,)*2, (horizontal or vertical,)*2]
     for _ in range(len(image.shape)-2):
         padding.append((0, 0))
     return np.pad(image, padding, mode='edge')
