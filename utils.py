@@ -6,6 +6,8 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 
+Image = np.ndarray
+
 
 def imshow(image: np.ndarray, axis=None):
     axis = axis or plt

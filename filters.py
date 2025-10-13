@@ -45,3 +45,21 @@ def blur(image: np.ndarray, scale: float) -> np.ndarray:
     x = np.arange(np.floor(-3*scale), np.ceil(3*scale)+1)
     kernel = G1(0, scale, x)[..., np.newaxis]
     return linear(linear(image, kernel), kernel.T)
+
+def soft(image: np.ndarray, window: int, sigma: float) -> np.ndarray:
+    assert window & 1, "Window can't be even"
+    w, h, *_ = image.shape
+
+    padded = pad(image, window//2)
+    cursum = np.zeros_like(image)
+    curcount = np.zeros(image.shape, int)
+    for x, y in product(range(window), repeat=2):
+        sloice = padded[x:x+w, y:y+h, ...]
+        good = (sloice >= image-sigma) & (sloice <= image + sigma)
+        curcount += good
+        cursum[good] += sloice[good]
+    return cursum / curcount
+
+def unsharp(image: np.ndarray, radius: float, amount: float) -> np.ndarray:
+    blurred = blur(image, radius)
+    return image + (image - blurred) * amount
