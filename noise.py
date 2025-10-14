@@ -11,4 +11,4 @@ def salt(image: np.ndarray, p: float) -> np.ndarray:
 
 
 def normal(image: np.ndarray, scale: float) -> np.ndarray:
-    return image * np.random.normal(1, scale, image.shape)
+    return image + np.random.normal(0, scale, image.shape)

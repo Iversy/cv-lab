@@ -44,6 +44,8 @@ def G1(loc: float, scale: float, x: np.ndarray) -> np.ndarray:
 def blur(image: np.ndarray, scale: float) -> np.ndarray:
     x = np.arange(np.floor(-3*scale), np.ceil(3*scale)+1)
     kernel = G1(0, scale, x)[..., np.newaxis]
+    kernel /= sum(kernel)
+    print(f"Kernel size {len(kernel)}")
     return linear(linear(image, kernel), kernel.T)
 
 def soft(image: np.ndarray, window: int, sigma: float) -> np.ndarray:
