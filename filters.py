@@ -2,7 +2,7 @@ from functools import reduce
 from itertools import product
 import numpy as np
 
-from utils import pad
+from utils import pad, intensity_image, sobel, convolution
 
 def absdif(left: np.ndarray, right: np.ndarray) -> np.ndarray:
     return np.abs(left-right)
@@ -65,3 +65,32 @@ def soft(image: np.ndarray, window: int, sigma: float) -> np.ndarray:
 def unsharp(image: np.ndarray, radius: float, amount: float) -> np.ndarray:
     blurred = blur(image, radius)
     return image + (image - blurred) * amount
+
+def harris(image: np.ndarray, a=0.04, threshold=0.01)-> np.ndarray:
+    if image.ndim == 3:
+        image = intensity_image(image)
+    Ix, Iy = sobel(image)
+    
+    Ix2 = Ix ** 2
+    Iy2 = Iy ** 2
+    Ixy = Ix * Iy
+    
+    Sx2 = blur(Ix2, scale=1)
+    Sy2 = blur(Iy2, scale=1)
+    Sxy = blur(Ixy, scale=1)
+    
+    det = Sx2 * Sy2 - Sxy ** 2
+    trace = Sx2 + Sy2
+    res = det - a * trace ** 2
+    
+    corners = np.zeros_like(res)
+    corners[res > threshold * np.max(res)] = 1
+
+    return corners
+
+
+def DoG(image: np.ndarray, sigma=1, alpha=1.6) -> np.ndarray:
+    shakal1 = blur(image, scale=sigma)
+    shakal10 = blur(image,scale=sigma*alpha)
+    return shakal10 - shakal1
+    

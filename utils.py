@@ -43,6 +43,18 @@ def linear(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
         )
     ))
 
+def convolution(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
+    k, *_ = kernel.shape
+    h,w, *_ = image.shape
+    height = h - k + 1
+    width = w - k + 1
+    output = np.zeros((height, width))
+
+    for y in range(height):
+        for x in range(width):
+            output[y, x] = np.sum(image[y:y+k, x:x+k] * kernel)
+    return output
+
 
 def panels() -> tuple[Axes, Axes]:
     fig = plt.figure(figsize=(12, 6))
@@ -65,3 +77,18 @@ def to_matrix(string: str) -> np.ndarray:
         raise Exception
 def is_matrix():
     pass
+
+def intensity_image(image: np.ndarray) -> np.ndarray:
+    return np.mean(image, axis=2)
+
+def sobel(image):
+    Gx = np.array([[1, 0, -1],
+                   [2, 0, -2],
+                   [1, 0, -1]])
+    Gy = np.array([[1, 2, 1],
+                   [0, 0, 0],
+                   [-1, -2, -1]])
+    Ix = convolution(image, Gx)
+    Iy = convolution(image, Gy)
+    
+    return Ix, Iy
