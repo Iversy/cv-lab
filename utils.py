@@ -56,3 +56,12 @@ def demo(func, image: np.ndarray, name: str, formula: str = ''):
         imshow(func(image, *args, **kwargs), left)
         plot(func, right, label=formula, *args, **kwargs)
     return inner
+
+def to_matrix(string: str) -> np.ndarray:
+    try:
+        matrix = string.split("\n")
+        
+    except:
+        raise Exception
+def is_matrix():
+    pass
