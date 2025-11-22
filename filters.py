@@ -88,9 +88,38 @@ def harris(image: np.ndarray, a=0.04, threshold=0.01)-> np.ndarray:
 
     return corners
 
+def gesse(image: np.ndarray, threshold=0.01)-> np.ndarray:
+    if image.ndim == 3:
+        image = intensity_image(image)
+    Ix, Iy = sobel(image)
+    
+    Ix2 = Ix ** 2
+    Iy2 = Iy ** 2
+    Ixy = Ix * Iy
+    
+    Sx2 = blur(Ix2, scale=1)
+    Sy2 = blur(Iy2, scale=1)
+    Sxy = blur(Ixy, scale=1)
+    
+    a = 1
+    b = -2 * Sx2 * Sy2
+    c = Sx2 * Sy2 - 2 * Sxy
+    sD = np.sqrt(b ** 2 - 4 * a * c) 
+    l1 = (-b + sD) / 2 
+    l2 = (-b - sD) / 2 
+    mask1 = l1 > threshold 
+    mask2 = l2 > threshold
+    mask = mask1 & mask2
+    
+    corners = np.zeros_like(l1)
+    corners[mask] = 1
+
+    return corners
 
 def DoG(image: np.ndarray, sigma=1, alpha=1.6) -> np.ndarray:
     shakal1 = blur(image, scale=sigma)
     shakal10 = blur(image,scale=sigma*alpha)
     return shakal10 - shakal1
     
+def LoG(image: np.ndarray, sigma=1, alpha=1.6) -> np.ndarray:
+    return DoG(image,sigma,alpha) / ((alpha - 1) * sigma**2)
