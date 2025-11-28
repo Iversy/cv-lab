@@ -71,9 +71,8 @@ def harris(image: np.ndarray, a=0.04, threshold=0.01)-> np.ndarray:
         image = intensity_image(image)
     Ix, Iy = sobel(image)
     
-    Ix2 = Ix ** 2
-    Iy2 = Iy ** 2
-    Ixy = Ix * Iy
+    Ix2, Ixy = sobel(Ix)
+    Iy2, _ = sobel(Iy)
     
     Sx2 = blur(Ix2, scale=1)
     Sy2 = blur(Iy2, scale=1)
@@ -93,9 +92,8 @@ def gesse(image: np.ndarray, threshold=0.01)-> np.ndarray:
         image = intensity_image(image)
     Ix, Iy = sobel(image)
     
-    Ix2 = Ix ** 2
-    Iy2 = Iy ** 2
-    Ixy = Ix * Iy
+    Ix2, Ixy = sobel(Ix)
+    Iy2, _ = sobel(Iy)
     
     Sx2 = blur(Ix2, scale=1)
     Sy2 = blur(Iy2, scale=1)
