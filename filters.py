@@ -36,6 +36,8 @@ def median(image: np.ndarray, window: int) -> np.ndarray:
         axis=0
     )
 
+def binary(image: np.ndarray, treshold: float) -> np.ndarray:
+    return np.where(image > treshold, 1., 0.)
 
 def G1(loc: float, scale: float, x: np.ndarray) -> np.ndarray:
     return np.exp(-0.5 * ((x-loc)/scale)**2) / np.sqrt(2*np.pi) / scale
